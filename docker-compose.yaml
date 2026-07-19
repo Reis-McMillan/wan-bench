@@ -1,0 +1,62 @@
+services:
+  # Long-lived SGLang server for Wan2.2-T2V-A14B. Runs continuously; the
+  # benchmark client (built from the Dockerfile) is launched separately.
+  sglang:
+    image: lmsysorg/sglang:v0.5.15.post1-rocm720-mi30x
+    container_name: wan-sglang
+
+    # REQUIRED: run an init (tini) as PID 1 so `sglang` is NOT PID 1.
+    # SGLang's GPU worker calls kill_itself_when_parent_died(), which does
+    # `if os.getppid() == 1: os.kill(os.getpid(), SIGKILL)` to detect being
+    # reparented to init. If sglang itself is PID 1, the worker's real parent
+    # IS PID 1, so it false-positives and SIGKILLs itself on startup
+    # ("Rank 0 scheduler is dead. Exit code: -9"). init:true avoids that.
+    init: true
+
+    command: >
+      sglang serve
+      --model-path Wan-AI/Wan2.2-T2V-A14B-Diffusers
+      --num-gpus 1
+      --host 0.0.0.0
+      --port 30001
+
+    ports:
+      - "30001:30001"
+
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - render
+      - video
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
+
+    ipc: host
+    shm_size: "16gb"
+    ulimits:
+      memlock: -1
+      stack: 67108864
+
+    environment:
+      - HF_HOME=/root/.cache/huggingface
+      # - HF_TOKEN=${HF_TOKEN}
+
+    volumes:
+      - hf-cache:/root/.cache/huggingface
+
+    restart: unless-stopped
+
+    healthcheck:
+      # SGLang exposes /health once the server is ready.
+      test: ["CMD-SHELL", "curl -sf http://localhost:30001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      # Generous start_period: first boot downloads weights (~72GB) and warms up.
+      start_period: 30m
+      retries: 5
+
+volumes:
+  hf-cache:
