@@ -2,7 +2,6 @@ services:
   # Long-lived SGLang server for Wan2.2-T2V-A14B. Runs continuously; the
   # benchmark client (built from the Dockerfile) is launched separately.
   sglang:
-    image: lmsysorg/sglang:v0.5.15.post1-rocm720-mi30x
     container_name: wan-sglang
 
     # REQUIRED: run an init (tini) as PID 1 so `sglang` is NOT PID 1.
@@ -23,19 +22,13 @@ services:
     ports:
       - "30001:30001"
 
-    devices:
-      - /dev/kfd
-      - /dev/dri
-    group_add:
-      - render
-      - video
     security_opt:
       - seccomp:unconfined
     cap_add:
       - SYS_PTRACE
 
     ipc: host
-    shm_size: "16gb"
+    shm_size: "32gb"
     ulimits:
       memlock: -1
       stack: 67108864

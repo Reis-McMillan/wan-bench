@@ -1,0 +1,9 @@
+services:
+  sglang:
+    image: lmsysorg/sglang:v0.5.15.post1-rocm720-mi30x
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - render
+      - video

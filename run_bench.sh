@@ -9,7 +9,7 @@ SERVER_HOST="${SERVER_HOST:-localhost}"   # compose: the server service name
 SERVER_PORT="${SERVER_PORT:-30001}"
 TASK="${TASK:-text-to-video}"             # NOTE: not "t2v" (invalid choice)
 DATASET="${DATASET:-vbench}"              # vbench | random
-NUM_PROMPTS="${NUM_PROMPTS:-20}"
+NUM_PROMPTS="${NUM_PROMPTS:-1}"
 MAX_CONCURRENCY="${MAX_CONCURRENCY:-1}"
 
 echo "[run_bench] Benchmarking server at ${SERVER_HOST}:${SERVER_PORT}" \
