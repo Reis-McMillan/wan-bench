@@ -35,7 +35,14 @@ services:
 
     environment:
       - HF_HOME=/root/.cache/huggingface
-      # - HF_TOKEN=${HF_TOKEN}
+      - SGLANG_CACHE_DIT_ENABLED=true
+      - SGLANG_CACHE_DIT_FN=2
+      - SGLANG_CACHE_DIT_BN=1
+      - SGLANG_CACHE_DIT_WARMUP=4
+      - SGLANG_CACHE_DIT_RDT=0.4
+      - SGLANG_CACHE_DIT_MC=4
+      - SGLANG_CACHE_DIT_TAYLORSEER=true
+      - SGLANG_CACHE_DIT_TS_ORDER=2
 
     volumes:
       - hf-cache:/root/.cache/huggingface

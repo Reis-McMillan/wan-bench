@@ -9,11 +9,15 @@ SERVER_HOST="${SERVER_HOST:-localhost}"   # compose: the server service name
 SERVER_PORT="${SERVER_PORT:-30001}"
 TASK="${TASK:-text-to-video}"             # NOTE: not "t2v" (invalid choice)
 DATASET="${DATASET:-vbench}"              # vbench | random
-NUM_PROMPTS="${NUM_PROMPTS:-1}"
+NUM_PROMPTS="${NUM_PROMPTS:-5}"
 MAX_CONCURRENCY="${MAX_CONCURRENCY:-1}"
+NUM_FRAMES="${NUM_FRAMES:-33}"
+NUM_INFERENCE_STEPS="${NUM_INFERENCE_STEPS:-40}"
+HEIGHT="${HEIGHT:-480}"
+WIDTH="${WIDTH:-832}"
 
 echo "[run_bench] Benchmarking server at ${SERVER_HOST}:${SERVER_PORT}" \
-     "(dataset=${DATASET}, prompts=${NUM_PROMPTS}, concurrency=${MAX_CONCURRENCY})"
+     "(dataset=${DATASET}, prompts=${NUM_PROMPTS}"
 
 exec python3 -m sglang.multimodal_gen.benchmarks.bench_serving \
     --host "$SERVER_HOST" \
@@ -21,4 +25,8 @@ exec python3 -m sglang.multimodal_gen.benchmarks.bench_serving \
     --task "$TASK" \
     --dataset "$DATASET" \
     --num-prompts "$NUM_PROMPTS" \
-    --max-concurrency "$MAX_CONCURRENCY"
+    --max-concurrency "$MAX_CONCURRENCY" \
+    --num-frames "$NUM_FRAMES" \
+    --num-inference-steps "$NUM_INFERENCE_STEPS" \
+    --height "$HEIGHT" \
+    --width "$WIDTH" \
